@@ -42,6 +42,14 @@ class User
 
   field :invite_code,             :type => String
 
+  field :first_name,                :type => String
+  field :last_name,                 :type => String
+  field :full_name,                 :type => String
+  field :user_name,                 :type => String
+  field :using_temporary_password,  :type => Boolean
+  field :expert,                    :type => Boolean
+  field :author_id,                 :type => String
+
   attr_accessible :email, :password, :password_confirmation,
                   :remember_me, :invite_code
 
@@ -51,9 +59,10 @@ class User
 
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable, :timeoutable
-  devise :database_authenticatable, :registerable,  :confirmable,
-         :recoverable, :rememberable, :trackable, :validatable,
-         :lockable, :omniauthable
+  devise :omniauthable, :rememberable, :trackable, :database_authenticatable
+         #:registerable,  :confirmable,
+         #:recoverable, :rememberable, :trackable, #:validatable,
+         #:lockable, :omniauthable
 
   # Devise extensions must be included after devise
   # modules have been defined for the class

@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  before_filter :show_beta_page?
+  #before_filter :show_beta_page?, :show_env
+
 
   # rescue_from, ActionController::UnknownAction,
   #              ActionView::MissingTemplate,
@@ -40,6 +41,10 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  def show_env
+    logger.debug "REQUEST #{request.env}"
+  end
 
   # Add exceptions for log in page and logged in user
   def show_beta_page?

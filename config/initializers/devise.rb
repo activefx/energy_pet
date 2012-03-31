@@ -206,6 +206,11 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
+  config.omniauth :tendril, configatron.tendril.app_id,
+                            configatron.tendril.app_key,
+                            :scope => 'account consumption',
+                            :require => 'omniauth-tendril'
+
   unless configatron.github.app_id.nil?
     config.omniauth :github, configatron.github.app_id,
                              configatron.github.app_key,

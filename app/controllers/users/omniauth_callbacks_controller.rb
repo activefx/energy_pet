@@ -16,6 +16,7 @@ module Users
     # If the user is logged in, add authentication to their
     # account, otherwise create or find a user account
     def create
+      #logger.debug "REQUEST: #{request.env}"
       if current_user
         find_or_create_authentication_for_current_user(omniauth)
       else

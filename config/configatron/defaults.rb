@@ -10,6 +10,9 @@ require 'openid/store/filesystem'
   configatron.devise_mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
   configatron.omniauth.enable_password_authentication = false
 
+  configatron.tendril.app_id = ENV['TENDRIL_APP_ID']
+  configatron.tendril.app_key = ENV['TENDRIL_APP_KEY']
+
   # OpenID config
   # Must be './tmp' for Heroku
   configatron.open_id.storage_location = '/tmp'

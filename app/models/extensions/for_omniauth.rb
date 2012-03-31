@@ -58,7 +58,6 @@ module Extensions
         else
           self.authentications.create(omniauth_params)
         end
-
       end
     end
 
@@ -69,7 +68,13 @@ module Extensions
           self.email = omniauth_email
         end
       end
-      self.skip_confirmation! if self.email == omniauth_email
+      self.first_name = omniauth.info.first_name if omniauth.info.first_name
+      self.last_name = omniauth.info.last_name if omniauth.info.last_name
+      self.full_name = omniauth.info.name if omniauth.info.name
+      self.user_name = omniauth.info.username if omniauth.info.username
+      self.using_temporary_password = omniauth.info.using_temporary_password if omniauth.info.using_temporary_password
+      self.expert = omniauth.info.expert if omniauth.info.expert
+      self.author_id = omniauth.info.author_id if omniauth.info.author_id
     end
 
     # Sets a user password to avoid triggering the password validations
