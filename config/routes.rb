@@ -25,9 +25,9 @@ EnergyPet::Application.routes.draw do
   #match '/auth/:provider/callback' => 'authentications#create'
   #devise_for :users, controllers: {registrations: 'registrations'}
 
-  devise_for :administrators
+  resources :devices
 
-  match '/user' => "welcome#index", :as => :user_root
+  match '/user' => "devices#index", :as => :user_root
   match 'admin/dashboard' => "admin/dashboard#index", :as => :administrator_root
 
   # The priority is based upon order of creation:

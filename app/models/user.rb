@@ -73,6 +73,53 @@ class User
 
   validate :invitation_token_validity
 
+  def list_devices
+    tendril_request "/connect/user/current-user/account/default-account/location/default-location/network/default-network/device"
+  end
+
+  # 2011-12-31T00:00:00-0000
+  # YYYY-MM-DD"T"hh:mm:ssZ
+  def latest_meter_readings
+    meter_readings(
+      tendril_time(Chronic.parse("1 month ago")),
+      tendril_time(Time.now),
+      20
+    )
+  end
+
+  def external_account_details
+    tendril_request("/connect/user/current-user/account/default-account")
+  end
+
+  def external_account_id
+    @aid_aw ||= external_account_details["@externalAccountId"]
+  end
+
+  def tendril_time(time)
+    time.iso8601.reverse.sub(/:/, '').reverse
+  end
+
+  def meter_readings(from, to, limit)
+    url = "/connect/meter/read;external-account-id=#{external_account_id};from=#{from};to=#{to};limit-to-latest=#{limit};source=ACTUAL"
+    tendril_request url
+  end
+
+  def consumption(from, to, limit)
+    tendril_request "/connect/user/current-user/account/default-account/consumption/MONTHLY;from=#{from};to=#{to};limit-to-latest=#{limit};include-submetering-devices=true"
+  end
+
+  def latest_consumption
+    consumption(
+      tendril_time(Chronic.parse("1 month ago")),
+      tendril_time(Time.now),
+      20
+    )
+  end
+
+  def projected_consumption
+    tendril_request "/connect/user/current-user/account/default-account/consumption/MONTHLY/projection;source=ACTUAL"
+  end
+
   protected
 
   def beta_user_signup?
@@ -102,6 +149,19 @@ class User
       page(page || 1).per(10)
     end
   end
+
+  def tendril_request(url)
+    conn = Faraday.new('https://dev.tendrilinc.com')
+    response = conn.get do |req|
+      req.url url
+      req.headers['Accept'] = 'application/json'
+      req.headers['Content-Type'] = 'application/json'
+      req.headers['Access_Token'] = authentications.last.token
+    end
+    MultiJson.decode response.env[:body]
+  end
+
+
 
 
 #  def apply_omniauth(omniauth)

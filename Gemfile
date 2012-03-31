@@ -39,6 +39,7 @@ gem 'haml-rails'
 gem 'show_for'
 gem 'simple_form', :git => 'git://github.com/plataformatec/simple_form.git'
 gem 'twitter_bootstrap_form_for', :git => 'git://github.com/stouset/twitter_bootstrap_form_for.git'
+gem 'chronic'
 
 # Javascript
 gem 'jquery-rails'

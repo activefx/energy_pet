@@ -208,7 +208,7 @@ Devise.setup do |config|
   # up on your models and hooks.
   config.omniauth :tendril, configatron.tendril.app_id,
                             configatron.tendril.app_key,
-                            :scope => 'account consumption',
+                            :scope => 'account billing consumption',
                             :require => 'omniauth-tendril'
 
   unless configatron.github.app_id.nil?

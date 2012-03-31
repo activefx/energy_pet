@@ -473,6 +473,7 @@ DEPENDENCIES
   capybara
   capybara-mechanize!
   capybara-webkit
+  chronic
   coffee-rails (~> 3.2)
   configatron
   database_cleaner
