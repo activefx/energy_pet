@@ -13,8 +13,11 @@ defaults: &defaults
   logger: true
 
 development:
-  <<: *defaults
-  database: energy_pet_development
+  host: ds031647.mongolab.com
+  port: 31647
+  username: heroku_app3584442
+  password: e10db5l2ojnmbu738o5bun9385
+  database: heroku_app3584442
 
 test:
   <<: *defaults
