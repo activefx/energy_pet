@@ -1,11 +1,11 @@
-== Alpha
+== EnergyPet
 
-git clone git://github.com:activefx/alpha.git
-rename alpha <new_application_name>
-git remote rename origin alpha
+git clone git://github.com:activefx/energy_pet.git
+rename energy_pet <new_application_name>
+git remote rename origin energy_pet
 bundle install
 rake development:install
-git commit -a -m 'installed alpha'
+git commit -a -m 'installed energy_pet'
 
 
 

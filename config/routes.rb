@@ -1,4 +1,4 @@
-Alpha::Application.routes.draw do
+EnergyPet::Application.routes.draw do
 
   resources :beta_signups
 

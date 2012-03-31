@@ -14,11 +14,11 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  database: alpha_development
+  database: energy_pet_development
 
 test:
   <<: *defaults
-  database: alpha_test
+  database: energy_pet_test
 
 # set these environment variables on your prod server
 production:
