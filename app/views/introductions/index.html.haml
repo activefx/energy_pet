@@ -1,0 +1,46 @@
+.page-header
+  %h2 Welcome to your Electric Safari account
+
+#date{ 'data-id' => @simulation.day }
+  %h3= Time.parse(@simulation.date).strftime("%A, %B %d")
+
+.row
+  .span3
+    %h4 Reduction Goal
+    %p
+      %strong Status Code
+    #month_status_code
+      = @simulation.last_month_status
+    %p
+      %strong Percent of Savings Goal
+    #month_goal_percentage
+      = "#{((((1 - @simulation.last_month_percentage) * 100) / @user.target_goal) * 100).to_i}%"
+
+
+  .span3
+    %h4 Neighbor Goal
+    %p
+      %strong Status Code
+    #neighbor_status_code
+      = @simulation.neighbor_status
+    %p
+      %strong Percent of Savings Goal
+    #neighbor_goal_percentage
+      = "#{((((1 - @simulation.neighbor_percentage) * 100) / @user.neighbor_goal) * 100).to_i}%"
+
+  .span3
+    %h4 Benchmark Goal
+    %p
+      %strong Status Code
+    #baseline_status_code
+      = @simulation.baseline_status
+    %p
+      %strong Percent of Savings Goal
+    #baseline_goal_percentage
+      = "#{((((1 - @simulation.baseline_percentage) * 100) / @user.baseline_goal) * 100).to_i}%"
+
+.row
+  .span9
+    #day
+      = @simulation.day
+

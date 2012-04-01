@@ -3,8 +3,8 @@ class DevicesController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    binding.pry
     @user = current_user
+    @devices = @user.list_devices['device']
   end
 end
 

@@ -50,8 +50,10 @@ class User
   field :expert,                    :type => Boolean
   field :author_id,                 :type => String
 
-  attr_accessible :email, :password, :password_confirmation,
-                  :remember_me, :invite_code
+  field :target_goal,               :type => Integer
+  field :neighbor_goal,             :type => Integer
+  field :baseline_goal,             :type => Integer
+  field :phone_number,              :type => String
 
   has_many :authentications, :dependent => :destroy,
                              :autosave => true,
@@ -83,7 +85,7 @@ class User
     meter_readings(
       tendril_time(Chronic.parse("1 month ago")),
       tendril_time(Time.now),
-      20
+      2880
     )
   end
 
@@ -104,20 +106,59 @@ class User
     tendril_request url
   end
 
-  def consumption(from, to, limit)
-    tendril_request "/connect/user/current-user/account/default-account/consumption/MONTHLY;from=#{from};to=#{to};limit-to-latest=#{limit};include-submetering-devices=true"
+  def consumption(scale, from, to, limit)
+    tendril_request "/connect/user/current-user/account/default-account/consumption/#{scale};from=#{from};to=#{to};limit-to-latest=#{limit};include-submetering-devices=true"
+  end
+
+  def daily_consumption
+    consumption(
+      "DAILY",
+      tendril_time(Chronic.parse("1 month ago")),
+      tendril_time(Time.now),
+      31
+    )
   end
 
   def latest_consumption
     consumption(
+      "HOURLY",
       tendril_time(Chronic.parse("1 month ago")),
       tendril_time(Time.now),
-      20
+      730
     )
   end
 
   def projected_consumption
     tendril_request "/connect/user/current-user/account/default-account/consumption/MONTHLY/projection;source=ACTUAL"
+  end
+
+  def neighbors_last_month
+    neighbors(
+      "DAILY",
+      tendril_time(Chronic.parse("1 month ago")),
+      tendril_time(Time.now)
+    )
+  end
+
+  def neighbors(scale, from, to)
+    tendril_request "/connect/user/current-user/account/default-account/comparison/myneighbors/#{scale};from=#{from};to=#{to}"
+  end
+
+  def baselines
+    tendril_request "/connect/user/current-user/account/default-account/comparison/baselineactual/DAILY"
+  end
+
+  def baseline_as_of(day)
+    parsed_date = tendril_time(day)
+    tendril_request "/connect/user/current-user/account/default-account/comparison/baselineactual/DAILY;asof=#{parsed_date}"
+  end
+
+  def baseline_data
+    (0..30).each do |offset|
+      date = (Date.today - offset).to_time
+      data = baseline_as_of(date)
+      puts "{:date => #{data['baseline']['@fromDate']}, :baseline_cost => #{data['baseline']['cost']}, :baseline_consumption => #{data['baseline']['consumption']}, :actual_cost => #{data['actual']['cost']}, :actual_consumption => #{data['actual']['consumption']}}"
+    end
   end
 
   protected

@@ -1,0 +1,32 @@
+.page-header
+  %h1 Costs & Consumption
+
+.row
+  .span3
+    .well
+      = @total_kwh
+      kWh used
+  .span3
+    .well
+      = @total_cost
+      total cost
+  .span3
+    .well
+      = @lbs_co2
+      lbs of co2
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th To
+      %th From
+      %th Cost
+      %th kWh
+  %tbody
+    - @costs.each do |cost|
+      %tr
+        %td= Date.parse(cost["@toDate"]).strftime("%A %b %d %Y %I:%M %p")
+        %td= Date.parse(cost["@fromDate"]).strftime("%A %b %d %Y %I:%M %p")
+        %td= cost['cost']
+        %td= cost['consumption']
+

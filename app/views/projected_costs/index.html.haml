@@ -1,0 +1,20 @@
+.page-header
+  %h1 Projected Costs & Consumption
+
+
+%p
+  %strong From Date
+  = Date.parse(@costs["@fromDate"]).strftime("%A %b %d %Y %I:%M %p")
+
+%p
+  %strong To Date
+  = Date.parse(@costs["@toDate"]).strftime("%A %b %d %Y %I:%M %p")
+
+%p
+  %strong Cost
+  = "$#{@costs["cost"]}"
+
+%p
+  %strong kWh
+  = @costs["consumption"].to_i
+

@@ -1,0 +1,16 @@
+.page-header
+  %h1 Smart Grid Enabled Devices
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Device ID
+      %th Name
+      %th Category
+  %tbody
+    - @devices.each do |device|
+      %tr
+        %td= device['deviceId']
+        %td= device['marketingName']
+        %td= device['category'].first
+

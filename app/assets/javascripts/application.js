@@ -16,6 +16,16 @@
 //= require_tree .
 
 $(document).ready(function(){
-
+  if (parseInt($('#day').text()) < 31) {
+    setTimeout(updateStatusCodes, 1000);
+  }
 });
+
+function updateStatusCodes () {
+  var day_id = parseInt($('#day').text()) + 1;
+  $.getScript("/simulations.js?day=" + day_id)
+  if (day_id < 31) {
+    setTimeout(updateStatusCodes, 1000);
+  }
+};
 

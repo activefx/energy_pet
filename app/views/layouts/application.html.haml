@@ -2,7 +2,7 @@
 %html
   %head
     %meta{:charset => "utf-8"}
-    %title= content_for?(:title) ? yield(:title) : "Alpha"
+    %title= content_for?(:title) ? yield(:title) : "ElectricSafari"
     %meta{:content => "", :name => "description"}
     %meta{:content => "", :name => "author"}
 
@@ -17,7 +17,7 @@
     .navbar.navbar-fixed-top
       .navbar-inner
         .container
-          = link_to "Alpha", "#", :class => "brand"
+          = link_to "ElectricSafari", "#", :class => "brand"
           %ul.nav
             //%li.active
             //  %a{:href => "#"} Home
@@ -28,10 +28,26 @@
           %ul.nav.pull-right
             = login_status
     .container
+
       .row
-        .span12
+        .span3
+          - if user_signed_in?
+            .well.sidebar-nav
+              %ul.nav.nav-list
+                %li.nav-header Electric Safari
+                %li= link_to "Home", introductions_path
+                %li= link_to "Settings", settings_path
+                %li.nav-header Details
+                %li= link_to "Devices", devices_path
+                %li= link_to "Meter Readings", meter_readings_path
+                %li= link_to "Costs & Consumption", costs_path
+                %li= link_to "Projections", projected_costs_path
+                %li= link_to "Neighbor Comparison", neighbors_path
+
+        .span9
           = flash_messages
-      = yield
+          = yield
+
       %hr
       %footer
         %p= "&copy; #{Time.now.year}".html_safe

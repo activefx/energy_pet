@@ -26,8 +26,17 @@ EnergyPet::Application.routes.draw do
   #devise_for :users, controllers: {registrations: 'registrations'}
 
   resources :devices
+  resources :settings
+  resources :introductions
+  resources :meter_readings
+  resources :costs
+  resources :projected_costs
+  resources :neighbors
+  resources :bad_simulations
+  resources :good_simulations
+  resources :simulations
 
-  match '/user' => "devices#index", :as => :user_root
+  match '/user' => "introductions#index", :as => :user_root
   match 'admin/dashboard' => "admin/dashboard#index", :as => :administrator_root
 
   # The priority is based upon order of creation:

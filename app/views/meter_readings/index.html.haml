@@ -1,0 +1,16 @@
+.page-header
+  %h1 Meter Readings for Last Month (15 Minute Interval Data)
+
+//%h2= "kWh used in the past month: #{@kwh}"
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Time
+      %th Watt Hours
+  %tbody
+    - @readings.each do |reading|
+      %tr
+        %td= Date.parse(reading['timeStamp']).strftime("%A %b %d %Y %I:%M %p")
+        %td= reading['value'].to_i
+

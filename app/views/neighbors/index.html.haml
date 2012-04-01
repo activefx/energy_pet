@@ -1,0 +1,24 @@
+.page-header
+  %h1 Compare to My Neighbors
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th To
+      %th From
+      %th Neighbors Cost
+      %th Neighbors Usage
+      %th My Cost
+      %th My Usage
+      %th Difference
+  %tbody
+    - @neighbors.each_with_index do |n, index|
+      %tr
+        %td= Date.parse(n["@toDate"]).strftime("%A %b %d %Y %I:%M %p")
+        %td= Date.parse(n["@fromDate"]).strftime("%A %b %d %Y %I:%M %p")
+        %td= n['cost']
+        %td= n['consumption']
+        %td= @me[index]['cost']
+        %td= @me[index]['consumption']
+        %td= "#{((@me[index]['consumption'] / n['consumption']) * 100).to_i}%"
+
