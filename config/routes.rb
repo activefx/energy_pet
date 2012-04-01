@@ -1,7 +1,5 @@
 EnergyPet::Application.routes.draw do
 
-  resources :beta_signups
-
   devise_for :users, :controllers => { :confirmations => "users/confirmations",
                                        :omniauth_callbacks => "users/omniauth_callbacks",
                                        :passwords => "users/passwords",
@@ -35,6 +33,7 @@ EnergyPet::Application.routes.draw do
   resources :bad_simulations
   resources :good_simulations
   resources :simulations
+  resources :thermostats
 
   match '/user' => "introductions#index", :as => :user_root
   match 'admin/dashboard' => "admin/dashboard#index", :as => :administrator_root
