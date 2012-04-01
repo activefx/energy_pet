@@ -1,20 +1,25 @@
 .page-header
   %h1 Projected Costs & Consumption
 
+#projections
+  %p
+    %strong From:
+    = Date.parse(@costs["@fromDate"]).strftime("%A %b %d %Y %I:%M %p")
 
-%p
-  %strong From Date
-  = Date.parse(@costs["@fromDate"]).strftime("%A %b %d %Y %I:%M %p")
+  %p
+    %strong To:
+    = Date.parse(@costs["@toDate"]).strftime("%A %b %d %Y %I:%M %p")
 
-%p
-  %strong To Date
-  = Date.parse(@costs["@toDate"]).strftime("%A %b %d %Y %I:%M %p")
+  %p
+    %strong Cost:
+    = "$#{@costs["cost"]}"
 
-%p
-  %strong Cost
-  = "$#{@costs["cost"]}"
+  %p
+    %strong kWh:
+    = @costs["consumption"].to_i
 
-%p
-  %strong kWh
-  = @costs["consumption"].to_i
+  %p.savings
+    %strong Monthly savings if you meet your goal:
+    %span.label.label-success
+      = "$#{(@costs["cost"].to_f * 0.10).round(2)}"
 

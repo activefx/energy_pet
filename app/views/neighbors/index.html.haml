@@ -1,5 +1,11 @@
+- content_for :head do
+  = render :partial => "neighbors_chart",
+    :locals => { :my_usage => @me.collect{|x| x['consumption']}, :my_neighbors => @neighbors.collect{|x| x['consumption']} }
+
 .page-header
   %h1 Compare to My Neighbors
+
+#neighborchart
 
 %table.table.table-striped
   %thead

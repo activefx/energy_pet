@@ -33,15 +33,15 @@ class Simulation
   end
 
   def status_coder(value)
-    return 9 if value < 0.89
-    return 8 if value < 0.92
-    return 7 if value < 0.95
-    return 6 if value < 0.98
-    return 5 if value < 1.02
-    return 4 if value < 1.05
-    return 3 if value < 1.08
-    return 2 if value < 1.11
-    1
+    return 0 if value < 0.89
+    return 1 if value < 0.92
+    return 2 if value < 0.95
+    return 3 if value < 0.98
+    return 4 if value < 1.02
+    return 5 if value < 1.05
+    return 6 if value < 1.08
+    return 7 if value < 1.11
+    8
   end
 
   def last_month_percentage

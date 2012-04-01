@@ -1,0 +1,44 @@
+:javascript
+  $(function() {
+    new Highcharts.Chart({
+      chart: {
+        renderTo: "usagechart",
+        defaultSeriesType: 'column'
+      },
+      credits: {
+        enabled: false
+      },
+      title: {
+        text: "Monthy Energy Usage",
+        x: -20
+      },
+      subtitle: {
+        text: 'Source: Tendril',
+        x: -20
+      },
+      xAxis: {
+        categories: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
+      },
+      yAxis: {
+        title: {
+          text: 'Kilowatt Hours'
+        },
+        allowDecimals: false,
+        min: 0
+      },
+      tooltip: {
+        formatter: function() {
+          return Highcharts.numberFormat(this.y, 0) + ' kWh';
+        }
+      },
+      plotOptions: {
+        column: {
+          showInLegend: false
+        }
+      },
+      series: [{
+        data: [30, 40, 28, 29, 32, 25, 24, 35, 32, 35, 23, 20, 30, 32, 35, 36, 35, 25, 27, 29, 40, 38, 29, 32, 33, 34, 31, 35, 38, 41, 37]
+      }]
+    });
+  });
+

@@ -1,46 +1,56 @@
 .page-header
-  %h2 Welcome to your Electric Safari account
-
-#date{ 'data-id' => @simulation.day }
-  %h3= Time.parse(@simulation.date).strftime("%A, %B %d")
+  #date{ 'data-id' => @simulation.day }
+    %h3= Time.parse(@simulation.date).strftime("%A, %B %d")
 
 .row
+  .span6
+    %canvas#canvas_goal{ :style => "display:block; border:0px solid #ccc;"}
   .span3
-    %h4 Reduction Goal
-    %p
-      %strong Status Code
-    #month_status_code
-      = @simulation.last_month_status
-    %p
-      %strong Percent of Savings Goal
-    #month_goal_percentage
-      = "#{((((1 - @simulation.last_month_percentage) * 100) / @user.target_goal) * 100).to_i}%"
+    .metrics
+      %h2 RiveraRhino
+      %h4 Month over Month Energy Reduction Goal
+      %p.stats
+        %strong Percent of Savings Goal
+      #month_goal_percentage
+        = "#{((((1 - @simulation.last_month_percentage) * 100) / @user.target_goal) * 100).to_i}%"
+
+.row
+  .span6
+    %canvas#canvas_neighbor{ :style => "display:block; border:0px solid #ccc;"}
+  .span3
+    .metrics
+      %h2 DuranteGiraffi
+      %h4 Savings over Neighbors Energy Usage Goal
+      %p.stats
+        %strong Percent of Savings Goal
+      #neighbor_goal_percentage
+        = "#{((((1 - @simulation.neighbor_percentage) * 100) / @user.neighbor_goal) * 100).to_i}%"
+
+.row
+  .span6
+    %canvas#canvas_baseline{ :style => "display:block; border:0px solid #ccc;"}
+  .span3
+    .metrics
+      %h2 KoberleinKomodo
+      %h4 Improvement from Last Year's Benchmark Goal
+      %p.stats
+        %strong Percent of Savings Goal
+      #baseline_goal_percentage
+        = "#{((((1 - @simulation.baseline_percentage) * 100) / @user.baseline_goal) * 100).to_i}%"
 
 
-  .span3
-    %h4 Neighbor Goal
-    %p
-      %strong Status Code
-    #neighbor_status_code
-      = @simulation.neighbor_status
-    %p
-      %strong Percent of Savings Goal
-    #neighbor_goal_percentage
-      = "#{((((1 - @simulation.neighbor_percentage) * 100) / @user.neighbor_goal) * 100).to_i}%"
-
-  .span3
-    %h4 Benchmark Goal
-    %p
-      %strong Status Code
-    #baseline_status_code
-      = @simulation.baseline_status
-    %p
-      %strong Percent of Savings Goal
-    #baseline_goal_percentage
-      = "#{((((1 - @simulation.baseline_percentage) * 100) / @user.baseline_goal) * 100).to_i}%"
 
 .row
   .span9
     #day
       = @simulation.day
+
+:javascript
+  var ecoPet_goal = new EcoPet(new Ui('canvas_goal'));
+  var ecoPet_neighbor = new EcoPet(new Ui('canvas_neighbor'));
+  var ecoPet_baseline = new EcoPet(new Ui('canvas_baseline'));
+
+  ecoPet_goal.load(EcoPets.RHINO);
+  ecoPet_neighbor.load(EcoPets.GIRAFFE);
+  ecoPet_baseline.load(EcoPets.KOMODO);
 

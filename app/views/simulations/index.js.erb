@@ -1,7 +1,7 @@
 $("#day").text("<%= @simulation.day %>");
-$("#month_status_code").text("<%= @simulation.last_month_status %>");
-$("#neighbor_status_code").text("<%= @simulation.neighbor_status %>");
-$("#baseline_status_code").text("<%= @simulation.baseline_status %>");
+ecoPet_goal.state = <%= @simulation.last_month_status %>;
+ecoPet_neighbor.state = <%= @simulation.neighbor_status %>;
+ecoPet_baseline.state = <%= @simulation.baseline_status %>;
 $("#date h3").text("<%= Time.parse(@simulation.date).strftime("%A, %B %d") %>")
 
 $("#month_goal_percentage").text("<%= ((((1 - @simulation.last_month_percentage) * 100) / @user.target_goal) * 100).to_i %>%");

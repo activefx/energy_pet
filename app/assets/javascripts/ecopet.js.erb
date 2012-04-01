@@ -1,0 +1,383 @@
+    var EcoPet = function(ui) {
+      this.ui = ui;
+      this.state = 8;
+      this.sprites = [];
+      this.clouds = [];
+      this.objects = [];
+      this.trees = {};
+      this.factory = {};
+    };
+
+    EcoPets = {
+      RHINO : {
+        SRC:"<%= asset_path 'rhi.png' %>",
+        HEIGHT:194,
+        WIDTH:300
+      },
+      KOMODO : {
+        SRC:"<%= asset_path 'kom.png' %>",
+        HEIGHT:103,
+        WIDTH:367
+      },
+      GIRAFFE : {
+        SRC:"<%= asset_path 'gir.png' %>",
+        HEIGHT:335,
+        WIDTH:162
+      }
+    };
+
+    EcoPet.COLORS = {
+      GROUND: [
+        '39a939',
+        '78a939',
+        '8da939',
+        'a2af36',
+        'afae36',
+        'afa236',
+        'a19532',
+        'a18d32',
+        '9c7e2d'
+      ],
+      SKY: [
+        '6793ec',
+        '7ca2ef',
+        '98b4ed',
+        'a8bde7',
+        'bdc0c6'
+      ]
+    };
+
+    EcoPet.prototype.load = function(img) {
+      this.ui.clear();
+      this.ui.addText('Loading...', [20, 100]);
+
+      var h = img.HEIGHT;
+      var w = img.WIDTH;
+      if(img.HEIGHT > this.ui.height-40) {
+        h = this.ui.height-40;
+        w = img.WIDTH * (h/img.HEIGHT);
+      }
+
+      this.loadClouds();
+      this.loadObjects();
+
+      this.animal = new Sprite({
+        image: img.SRC,
+        sWidth: img.WIDTH,
+        sHeight: img.HEIGHT,
+        sx: 0, sy:0,
+        dWidth: w,
+        dHeight: h,
+        dx: (this.ui.width/2-w/2), dy: this.ui.height-h-20
+      });
+      this.sprites.push(this.animal);
+
+      this.bowl = new Sprite({
+        image: "<%= asset_path 'bowl.png' %>",
+        sWidth: 275,
+        sHeight: 182,
+        sx: 0, sy:0,
+        dWidth: 100,
+        dHeight: 66,
+        dx: this.ui.width*0.04, dy: this.ui.height*0.78
+      });
+      this.sprites.push(this.bowl);
+      this.foodLevel = 28;
+
+      this.checkSpritesLoaded();
+
+    };
+
+    EcoPet.prototype.spritesLoaded = function(){
+      for(i in this.sprites){
+        if(!this.sprites[i].load) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    EcoPet.prototype.checkSpritesLoaded = function(){
+      var self = this;
+      if(this.spritesLoaded()) {
+        this.go();
+      } else {
+        setTimeout(function(){self.checkSpritesLoaded.call(self)}, 1000);
+      }
+    };
+
+    EcoPet.prototype.go = function() {
+      this.ui.clear(true);
+      var self = this;
+
+      var w = this.ui.width;
+      var h = this.ui.height;
+
+      this.ui.addButton(new Ui.button([[0, 0], [w/2, 0], [w/2, h/2], [0, h/2]], null, function(){self.hurt();}));
+      this.ui.addButton(new Ui.button([[w/2, 0], [w, 0], [w, h/2], [w/2, h/2]], null, function(){self.help();}));
+      this.ui.addButton(new Ui.button([[0, h/2], [w/2, h/2], [w/2, h], [0, h]], null, function(){self.addFood();}));
+      this.ui.addButton(new Ui.button([[w/2, h/2], [w, h/2], [w, h], [w/2, h]], null, function(){self.removeFood();}));
+
+      this.loop = setInterval(function(){self.update.call(self)}, 100);
+    };
+
+    EcoPet.prototype.addFood = function(){
+      if(this.foodLevel < 77) this.foodLevel += 7;
+    };
+
+    EcoPet.prototype.removeFood = function(){
+      if(this.foodLevel > 0) this.foodLevel -= 7;
+    };
+
+    EcoPet.prototype.hurt = function(){
+      if(this.state < 8) {
+        this.state++;
+      }
+    };
+
+    EcoPet.prototype.help = function(){
+      if(this.state > 0) {
+        this.state--;
+      }
+    };
+
+    EcoPet.prototype.update = function(state) {
+      this.ui.clear();
+      this.drawBackground();
+      this.moveClouds();
+      this.moveObjects();
+      this.drawGround();
+      this.animal.sx = this.animal.sWidth*(parseInt(this.state/3));
+      this.ui.drawSprite(this.animal);
+      this.ui.drawSprite(this.bowl);
+      this.drawFood();
+
+    };
+
+    EcoPet.prototype.moveObjects = function(){
+
+      this.ui.context.globalAlpha = 1-this.requestTreePos()/(this.ui.height*0.6);
+      this.ui.context.drawImage(this.trees.canvas, 0, this.requestTreePos());
+
+      this.ui.context.globalAlpha = 1 - this.requestFactoryPos()/(this.ui.height*0.6);
+      this.ui.context.drawImage(this.factory.canvas, 0, this.requestFactoryPos());
+      this.ui.context.globalAlpha = 1;
+    };
+
+    EcoPet.prototype.requestFactoryPos = function(){
+      var endPos = (8-this.state) * 50 * 0.6;
+      this.factory.currentPos += (endPos - this.factory.currentPos)/1.7;
+      return this.factory.currentPos;
+    };
+
+    EcoPet.prototype.requestTreePos = function(){
+      var endPos = this.state * 50 * 0.6;
+      this.trees.currentPos += (endPos - this.trees.currentPos)/1.7;
+      return this.trees.currentPos;
+    };
+
+    EcoPet.prototype.moveClouds = function() {
+      for(i in this.clouds) {
+        var c = this.clouds[i];
+        if(!c.int) c.int = Math.floor(Math.random()*6 + 2);
+        if(c.dx < -70){
+          c.dx = this.ui.width + 70;
+          c.dy = Math.floor(Math.random()*this.ui.height/2 - 70);
+          c.int = Math.floor(Math.random()*4 + 1);
+        } else {
+          c.dx -= c.int;
+        }
+        this.ui.drawSprite(c);
+      }
+    };
+
+    EcoPet.prototype.drawFood = function() {
+      if(this.foodLevel > 0) {
+        var cxt = this.ui.context,
+        x = this.bowl.dx + 15,
+        y = this.bowl.dy + 15,
+        x2 = this.bowl.dx + this.bowl.dWidth - 15;
+        cxt.fillStyle = '#553a13';
+        cxt.beginPath();
+        cxt.moveTo(x, y);
+        cxt.quadraticCurveTo((x+x2)/2, y+5, x2, y);
+        cxt.quadraticCurveTo((x+x2)/2, y-this.foodLevel, x, y);
+        cxt.fill();
+      }
+    };
+
+    EcoPet.prototype.drawBackground = function(){
+      var cxt = this.ui.context,
+      h = this.ui.height,
+      w = this.ui.width;
+
+      var gradient = cxt.createLinearGradient(0, 0, 0, h);
+      gradient.addColorStop(0, this.requestSkyColor());
+      gradient.addColorStop(1, '#fff');
+      cxt.fillStyle = gradient;
+      cxt.fillRect(0,0,w,h);
+    };
+
+    EcoPet.prototype.drawGround = function() {
+      var cxt = this.ui.context,
+      h = this.ui.height,
+      w = this.ui.width;
+      var gradient = cxt.createLinearGradient(0, h*0.65, 0, 2*h);
+      gradient.addColorStop(0, this.requestGroundColor());
+      gradient.addColorStop(1, '#fff');
+      cxt.fillStyle = gradient
+      cxt.beginPath();
+      cxt.moveTo(0, h*0.625);
+      cxt.quadraticCurveTo(w*0.25, h*0.593, w*0.57, h*0.78);
+      cxt.quadraticCurveTo(w*0.85, h*0.65, w, h*0.78);
+      cxt.lineTo(w, h);
+      cxt.lineTo(0, h);
+      cxt.fill();
+    };
+
+    EcoPet.prototype.requestGroundColor = function(){
+      if(this.currentGroundColor) {
+        var endColor = EcoPet.COLORS.GROUND[this.state];
+        if(this.currentGroundColor != endColor){
+          var rgb = utils.colorConv(this.currentGroundColor);
+          var rgb2 = utils.colorConv(endColor);
+
+          for(i in rgb){
+            rgb[i] += parseInt((rgb2[i] - rgb[i])/10);
+          }
+
+          this.currentGroundColor = rgb[0].toString(16) + '' + rgb[1].toString(16) + '' + rgb[2].toString(16);
+
+        }
+      } else {
+        this.currentGroundColor = EcoPet.COLORS.GROUND[this.state];
+      }
+      return '#' + this.currentGroundColor;
+    }
+
+    EcoPet.prototype.requestSkyColor = function(){
+      if(this.currentSkyColor) {
+        var endColor = EcoPet.COLORS.SKY[parseInt(this.state/2)];
+        if(this.currentSkyColor != endColor){
+          var rgb = utils.colorConv(this.currentSkyColor);
+          var rgb2 = utils.colorConv(endColor);
+
+          for(i in rgb){
+            rgb[i] += parseInt((rgb2[i] - rgb[i])/10);
+          }
+          this.currentSkyColor = rgb[0].toString(16) + '' + rgb[1].toString(16) + '' + rgb[2].toString(16);
+        }
+      } else {
+        this.currentSkyColor = EcoPet.COLORS.SKY[parseInt(this.state/2)];
+      }
+
+      return '#' + this.currentSkyColor;
+    };
+
+    EcoPet.prototype.loadClouds = function(){
+
+      this.clouds[0] = new Sprite({
+        image: "<%= asset_path 'clouds.png' %>",
+        sWidth: 134,
+        sHeight: 120,
+        sx: 0, sy:0,
+        dWidth: 134/2,
+        dHeight: 60,
+        dx: Math.floor(Math.random()*this.ui.width),
+        dy: Math.floor(Math.random()*(this.ui.height/2 - 70))
+      });
+
+      this.clouds[1] = new Sprite({
+        image: "<%= asset_path 'clouds.png' %>",
+        sWidth: 134,
+        sHeight: 110,
+        sx: 0, sy:120,
+        dWidth: 134/2,
+        dHeight: 55,
+        dx: Math.floor(Math.random()*this.ui.width),
+        dy: Math.floor(Math.random()*(this.ui.height/2 - 70))
+      });
+
+      this.clouds[2] = new Sprite({
+        image: "<%= asset_path 'clouds.png' %>",
+        sWidth: 134,
+        sHeight: 88,
+        sx: 0, sy:236,
+        dWidth: 134/2,
+        dHeight: 44,
+        dx: Math.floor(Math.random()*this.ui.width),
+        dy: Math.floor(Math.random()*(this.ui.height/2 - 70))
+      });
+
+      this.sprites.push(this.clouds[2]);
+      this.sprites.push(this.clouds[1]);
+      this.sprites.push(this.clouds[0]);
+    };
+
+    EcoPet.prototype.loadObjects = function(){
+      this.trees.canvas = document.createElement('canvas');
+      this.trees.canvas.width = this.ui.width;
+      this.trees.canvas.height = this.ui.height;
+      this.trees.context = this.trees.canvas.getContext('2d');
+      var tree = new Sprite({
+        image: "<%= asset_path 'tree.png' %>",
+        sWidth: 85,
+        sHeight: 86,
+        sx: 0, sy:0,
+        dWidth: 85,
+        dHeight: 86,
+        dx: this.ui.width*0.06,
+        dy: this.ui.height*0.65 - 86
+      });
+      this.sprites.push(tree);
+
+      this.trees.context.drawImage(tree.image,
+        0, 0,
+        85, 86,
+        this.ui.width*0.06, this.ui.height*0.65 - 86,
+        85, 86
+      );
+      this.trees.context.drawImage(tree.image,
+        0, 0,
+        85, 86,
+        this.ui.width*0.20, this.ui.height*0.69 - 86,
+        85, 86
+      );
+      this.trees.context.drawImage(tree.image,
+        0, 0,
+        85, 86,
+        this.ui.width*0.79, this.ui.height*0.75 - 86,
+        85, 86
+      );
+      this.trees.currentPos = this.state * 30 * 0.6;
+
+      this.factory = {};
+      this.factory.canvas = document.createElement('canvas');
+      this.factory.canvas.width = this.ui.width;
+      this.factory.canvas.height = this.ui.height;
+      this.factory.context = this.factory.canvas.getContext('2d');
+      var factory = new Sprite({
+        image: "<%= asset_path 'factory.png' %>",
+        sWidth: 112,
+        sHeight: 93,
+        sx: 0, sy:0,
+        dWidth: 112,
+        dHeight: 93,
+        dx: this.ui.width*0.06,
+        dy: this.ui.height*0.65 - 86
+      });
+      this.sprites.push(factory);
+      this.factory.context.drawImage(factory.image,
+        0, 0,
+        112, 93,
+        this.ui.width*0.7, this.ui.height*0.75-93,
+        112, 93
+      );
+      this.factory.currentPos = (8-this.state) * 30 * 0.6;
+
+    };
+
+    EcoPet.prototype.getState = function(){
+      //null
+    };
+

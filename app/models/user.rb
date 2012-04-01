@@ -54,6 +54,8 @@ class User
   field :neighbor_goal,             :type => Integer
   field :baseline_goal,             :type => Integer
   field :phone_number,              :type => String
+  field :childs_email,              :type => String
+  field :childs_name,               :type => String
 
   has_many :authentications, :dependent => :destroy,
                              :autosave => true,
@@ -159,6 +161,39 @@ class User
       data = baseline_as_of(date)
       puts "{:date => #{data['baseline']['@fromDate']}, :baseline_cost => #{data['baseline']['cost']}, :baseline_consumption => #{data['baseline']['consumption']}, :actual_cost => #{data['actual']['cost']}, :actual_consumption => #{data['actual']['consumption']}}"
     end
+  end
+
+  def suggestions
+    [
+      "Turn off lights and all electronics (like computers, televisions, stereos, and video-games) when you leave a room.",
+      "Encourage your parents to keep the thermostat set no lower than 78 degrees.",
+      "Encourage your parents to change the A/C filter once a month.",
+      "Encourage your parents to do laundry and wash dishes after 8PM.",
+      "Unplug cell phone chargers when there's no phone plugged in.",
+      "Turn your thermostat down a few degrees in the winter and up a few degrees in the summer.",
+      "Try not to leave doors open.",
+      "Close your curtains to keep out daytime summer heat or keep in nighttime winter warmth.",
+      "Encourage your parents to replace incandescent lightbulbs with compact fluorescent ones.",
+      "Don't keep the refrigerator door open any longer than you need to."
+    ]
+  end
+
+  def thermo
+    conn = Faraday.new('https://dev.tendrilinc.com')
+    response = conn.post do |req|
+      req.url '/connect/device-action'
+      req.headers['Accept'] = 'application/xml'
+      #req.headers['Content-Type'] = 'application/xml'
+      req.headers['Access_Token'] = authentications.last.token
+      req.body = %q!
+<?xml version="1.0" encoding="UTF-8' standalone="yes"?>
+<getThermostatDataRequest
+  xmlns="http://platform.tendrilinc.com/tnop/extension/ems"
+  deviceId="001e5e0000003605" locationId="default-location">
+</getThermostatDataRequest>
+      !
+    end
+    response.env[:body]
   end
 
   protected

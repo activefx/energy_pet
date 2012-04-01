@@ -8,6 +8,11 @@ class SimulationsController < ApplicationController
     end
     @simulation = Simulation.where(:day => params[:day]).first
     @user = current_user
+    if @simulation.neighbor_percentage > 1.1
+      if Rails.env.to_s == "production"
+        SuggestionMailer.suggestion_email(@user).deliver
+      end
+    end
   end
 
 end

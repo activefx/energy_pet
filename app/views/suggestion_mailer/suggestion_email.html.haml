@@ -1,0 +1,11 @@
+!!!
+%html
+  %head
+    %meta{ :content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type" }
+  %body
+    %p
+      = "Dear #{@user.try(:childs_name)},"
+    %p Your posse is in trouble on Electric Safari. Use the following energy saving suggestion below to return them to health.
+    %p
+      = @user.suggestions[rand(@user.suggestions.size - 1)]
+

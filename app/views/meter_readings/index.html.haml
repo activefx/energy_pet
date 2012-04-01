@@ -1,7 +1,12 @@
-.page-header
-  %h1 Meter Readings for Last Month (15 Minute Interval Data)
+- content_for :head do
+  = render :partial => "usage_chart"
 
-//%h2= "kWh used in the past month: #{@kwh}"
+.page-header
+  %h1
+    Meter Readings for Last Month
+    %small 15 Minute Intervals
+
+#usagechart
 
 %table.table.table-striped
   %thead

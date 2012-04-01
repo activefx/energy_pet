@@ -1,0 +1,57 @@
+:javascript
+  $(function() {
+    new Highcharts.Chart({
+      chart: {
+        renderTo: 'neighborchart',
+        type: 'line',
+        marginRight: 10,
+        marginBottom: 25
+      },
+      credits: {
+        enabled: false
+      },
+      title: {
+        text: 'My Energy Usage vs. My Neighbors',
+        x: -20
+      },
+      subtitle: {
+        text: 'Source: Tendril',
+        x: -20
+      },
+      xAxis: {
+        categories: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
+      },
+      yAxis: {
+        title: {
+          text: 'Kilowatt Hours'
+        },
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
+      },
+      tooltip: {
+        formatter: function() {
+          return '<b>'+ this.series.name +'</b><br/>'+
+                  this.y +'kWh';
+          }
+      },
+      legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'bottom',
+        x: -10,
+        y: 100,
+        borderWidth: 0
+      },
+      series: [{
+        name: 'My Usage',
+        data: #{my_usage}
+      }, {
+        name: 'My Neighbors',
+        data: #{my_neighbors}
+      }]
+    });
+  });
+

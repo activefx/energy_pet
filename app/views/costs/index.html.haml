@@ -1,19 +1,21 @@
 .page-header
-  %h1 Costs & Consumption
+  %h1
+    Costs & Consumption
+    %small March 2012
 
 .row
   .span3
     .well
-      = @total_kwh
-      kWh used
+      .number= @total_kwh
+      .desc kilowatt hours used
   .span3
     .well
-      = @total_cost
-      total cost
+      .number= "$#{@total_cost}"
+      .desc total spent this month
   .span3
     .well
-      = @lbs_co2
-      lbs of co2
+      .number= @lbs_co2
+      .desc pounds of CO2 created
 
 %table.table.table-striped
   %thead

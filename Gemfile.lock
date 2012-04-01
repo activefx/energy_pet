@@ -335,7 +335,7 @@ GEM
     oauth2 (0.5.2)
       faraday (~> 0.7)
       multi_json (~> 1.0)
-    omniauth-tendril (1.0.0)
+    omniauth-tendril (1.0.2)
       faraday (~> 0.7.6)
       multi_json (~> 1.2.0)
       multi_xml (~> 0.4.2)
@@ -513,7 +513,7 @@ DEPENDENCIES
   omniauth-oauth!
   omniauth-oauth2!
   omniauth-openid!
-  omniauth-tendril
+  omniauth-tendril (~> 1.0.2)
   omniauth-twitter!
   pry
   pry-doc

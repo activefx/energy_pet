@@ -17,7 +17,8 @@
     .navbar.navbar-fixed-top
       .navbar-inner
         .container
-          = link_to "ElectricSafari", "#", :class => "brand"
+          - unless params[:controller] = "welcome"
+            = link_to image_tag('es1.png'), "#", :class => "brand"
           %ul.nav
             //%li.active
             //  %a{:href => "#"} Home
@@ -41,14 +42,19 @@
                 %li= link_to "Devices", devices_path
                 %li= link_to "Meter Readings", meter_readings_path
                 %li= link_to "Costs & Consumption", costs_path
-                %li= link_to "Projections", projected_costs_path
                 %li= link_to "Neighbor Comparison", neighbors_path
-
+                %li= link_to "Projections", projected_costs_path
         .span9
           = flash_messages
           = yield
 
       %hr
       %footer
-        %p= "&copy; #{Time.now.year}".html_safe
+        - if params[:controller] == 'welcome'
+          .logos
+            = image_tag('tendril-logo.jpg', :height => '40')
+            = image_tag('heroku-logo.png', :height => '40')
+            = image_tag('sendgrid-logo.jpg', :height => '40')
+            = image_tag('mongolab.png', :height => '40')
+            = image_tag('greenbutton.png', :height => '40')
 
