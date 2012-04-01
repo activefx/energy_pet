@@ -17,7 +17,7 @@
     .navbar.navbar-fixed-top
       .navbar-inner
         .container
-          - unless params[:controller] = "welcome"
+          - unless params[:controller] == "welcome"
             = link_to image_tag('es1.png'), "#", :class => "brand"
           %ul.nav
             //%li.active
@@ -50,7 +50,7 @@
 
       %hr
       %footer
-        - if params[:controller] == 'welcome'
+        - if params[:controller] == "welcome"
           .logos
             = image_tag('tendril-logo.jpg', :height => '40')
             = image_tag('heroku-logo.png', :height => '40')
